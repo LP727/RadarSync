@@ -11,6 +11,7 @@ data class PositionEntity(
     @Json(name = "lat") val latitude: Double,
     @Json(name = "lon") val longitude: Double,
     @Json(name = "alt") val altitude: Double,
+    @Json(name = "acc") val accuracy: Float,
     val name: String,
     @Json(name = "tim") val time: Long,
 )

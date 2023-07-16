@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="anti_flash_white">#FFEEF1EF</color>
+    <color name="paynes_grey">#FF646881</color>
+    <color name="gunmetal">#FF002329</color>
+    <color name="black_bean">#FF280003</color>
+
+    <color name="dark_gray">#232323</color>
+    <color name="light_gray">#ECEFF1</color>
+    <color name="slightly_lighter_gray">#424242</color>
 </resources>

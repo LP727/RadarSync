@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-
-    <style name="Theme.RadarSync" parent="android:Theme.Material.Light.NoActionBar" />
+<resources xmlns:tools="http://schemas.android.com/tools">
+<!-- Base application theme. -->
+<style name="Theme.RadarSync" parent="Theme.AppCompat">
+    <!-- Primary brand color. -->
+    <item name="colorPrimary">@color/black</item>
+    <item name="colorPrimaryVariant">@color/black_bean</item>
+    <item name="colorOnPrimary">@color/paynes_grey</item>
+    <!-- Secondary brand color. -->
+    <item name="colorSecondary">@color/gunmetal</item>
+    <item name="colorSecondaryVariant">@color/black_bean</item>
+    <item name="colorOnSecondary">@color/anti_flash_white</item>
+    <!-- Status bar color. -->
+    <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+    <!-- Customize your theme here. -->
+</style>
 </resources>
