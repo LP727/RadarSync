@@ -9,10 +9,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.radarsync.databinding.FragmentMainBinding
+import androidx.lifecycle.Observer
+import com.example.radarsync.data.PositionListAdapter
 
 class MainFragment : Fragment() {
     private lateinit var viewModel: MainViewModel
     private lateinit var binding: FragmentMainBinding
+    private lateinit var adapter: PositionListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +32,15 @@ class MainFragment : Fragment() {
             )
             addItemDecoration(divider)
         }
+
+        viewModel.positionList.observe(
+            viewLifecycleOwner,
+            {
+                adapter = PositionListAdapter(it)
+                binding.recyclerView.adapter = adapter
+                binding.recyclerView.layoutManager = LinearLayoutManager(activity)
+            }
+        )
 
         return binding.root
     }
