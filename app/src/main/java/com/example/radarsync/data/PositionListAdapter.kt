@@ -63,7 +63,7 @@ class PositionListAdapter(private val positionList: List<PositionEntity>) :
 
     fun getTimeAndDateStringsFromTimestamp(unixTimestamp: Long): Pair<String, String> {
         // Convert the timestamp to a Date object
-        val date = Date(unixTimestamp * 1000) // Multiply by 1000 to convert to milliseconds
+        val date = Date(unixTimestamp) // Multiply by 1000 to convert to milliseconds
 
         // Format the time string
         val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())

@@ -20,10 +20,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     init {
         val text = FileHelper.getTextFromAssets(app, "test_positions.json")
 
-        parseTest(text)
+        positionList.value = parseText(text)
     }
 
-    fun parseTest(text: String)
+    fun parseText(text: String): List<PositionEntity>
     {
         val moshi = Moshi.Builder()
             .add(KotlinJsonAdapterFactory())
@@ -37,5 +37,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 "${position.name}, time: ${position.time}"
             )
         }
+
+        return positionData ?: emptyList()
     }
 }

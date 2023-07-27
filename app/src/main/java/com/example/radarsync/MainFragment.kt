@@ -34,7 +34,7 @@ class MainFragment : Fragment() {
         }
 
         viewModel.positionList.observe(
-            viewLifecycleOwner,
+            viewLifecycleOwner, Observer
             {
                 adapter = PositionListAdapter(it)
                 binding.recyclerView.adapter = adapter
