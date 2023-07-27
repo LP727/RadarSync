@@ -18,9 +18,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     )
 
     init {
-        val text = FileHelper.readTextFile(app)
+        val text = FileHelper.getTextFromAssets(app, "test_positions.json")
 
-        parseTest(text ?: "")
+        parseTest(text)
     }
 
     fun parseTest(text: String)

@@ -38,7 +38,7 @@ class PositionListAdapter(private val positionList: List<PositionEntity>) :
             //TODO : figure out how to calculate distance
             distanceText.text = "Unknown"
 
-            // TODO : figureout if Glide and BindingAdapter are needed
+            // TODO : figure out if Glide and BindingAdapter are needed
             latitudeText.text = Location.convert(pos.latitude, Location.FORMAT_DEGREES)
             longitudeText.text = Location.convert(pos.longitude, Location.FORMAT_DEGREES)
             altitudeText.text = Location.convert(pos.altitude, Location.FORMAT_DEGREES)
