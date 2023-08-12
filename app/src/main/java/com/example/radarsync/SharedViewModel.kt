@@ -1,6 +1,7 @@
 package com.example.radarsync
 
 import android.app.Application
+import android.location.Location
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -11,8 +12,9 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-class MainViewModel(app: Application) : AndroidViewModel(app) {
+class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     val positionList = MutableLiveData<List<PositionEntity>>()
+    val currentPosition = MutableLiveData<Location>()
     private val listType = Types.newParameterizedType(
         List::class.java, PositionEntity::class.java // custom type for JSON parsing
     )

@@ -13,7 +13,7 @@ import androidx.lifecycle.Observer
 import com.example.radarsync.data.PositionListAdapter
 
 class MainFragment : Fragment() {
-    private lateinit var viewModel: MainViewModel
+    private lateinit var viewModel: SharedViewModel
     private lateinit var binding: FragmentMainBinding
     private lateinit var adapter: PositionListAdapter
 
@@ -22,7 +22,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
 
         with(binding.recyclerView) {
             setHasFixedSize(true)
