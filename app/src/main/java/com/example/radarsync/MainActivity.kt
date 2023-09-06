@@ -1,6 +1,5 @@
 package com.example.radarsync
 
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.widget.Toast
 import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
@@ -12,7 +11,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.core.content.ContextCompat
 import androidx.work.Constraints
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
@@ -22,6 +20,8 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.radarsync.data.LocationUpdateWorker
 import com.example.radarsync.ui.theme.RadarSyncTheme
+import com.example.radarsync.utilities.PermissionHelper.Companion.checkPermissions
+import com.google.android.gms.common.GoogleApiAvailability
 
 class MainActivity : AppCompatActivity() {
     private val requestPermissionLauncher =
@@ -42,6 +42,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         checkPermissions()
+        checkGooglePlayServices()
         startLocationUpdates()
         // TODO: Uncomment when I have figured out how to use Compose
 //        setContent {
@@ -57,6 +58,18 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
+    private fun isGooglePlayServicesAvailable(): Boolean {
+        val googleApiAvailability = GoogleApiAvailability.getInstance()
+        val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
+        return resultCode == com.google.android.gms.common.ConnectionResult.SUCCESS
+    }
+
+    private fun checkGooglePlayServices() {
+        if (!isGooglePlayServicesAvailable()) {
+            GoogleApiAvailability.getInstance().makeGooglePlayServicesAvailable(this)
+        }
+    }
+
     private fun checkPermissions() {
         val permissionsToRequest = arrayOf(
             ACCESS_FINE_LOCATION,
@@ -64,12 +77,7 @@ class MainActivity : AppCompatActivity() {
             ACCESS_BACKGROUND_LOCATION
         )
 
-        // Check if all the permissions are already granted
-        val allPermissionsGranted = permissionsToRequest.all {
-            ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED
-        }
-
-        if (allPermissionsGranted) {
+        if (checkPermissions(permissionsToRequest,this)) {
             // All requested permissions are granted. Continue with your app's workflow.
             setContentView(R.layout.activity_main)
         } else {

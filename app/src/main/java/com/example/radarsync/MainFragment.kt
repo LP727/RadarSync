@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.radarsync.databinding.FragmentMainBinding
 import androidx.lifecycle.Observer
+import com.example.radarsync.data.PositionEntity
 import com.example.radarsync.data.PositionListAdapter
 
 class MainFragment : Fragment() {
@@ -39,6 +40,32 @@ class MainFragment : Fragment() {
                 adapter = PositionListAdapter(it)
                 binding.recyclerView.adapter = adapter
                 binding.recyclerView.layoutManager = LinearLayoutManager(activity)
+            }
+        )
+
+        // observe the current position
+        viewModel.currentPosition.observe(
+            viewLifecycleOwner, Observer
+            {
+                val newPosition = PositionEntity(
+                    "random id",
+                    it.latitude,
+                    it.longitude,
+                    it.altitude,
+                    it.accuracy,
+                    "Me",
+                    it.time
+                )
+
+                val currentList = viewModel.positionList.value ?: mutableListOf<PositionEntity>()
+                // Check if the id is already in the list
+                val index = currentList.indexOfFirst { pos -> pos.id == newPosition.id }
+                if (index == -1) {
+                    currentList.add(newPosition)
+                } else {
+                    currentList[index] = newPosition
+                }
+                viewModel.positionList.value = currentList
             }
         )
 

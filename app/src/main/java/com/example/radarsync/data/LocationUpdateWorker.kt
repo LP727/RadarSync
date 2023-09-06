@@ -1,5 +1,6 @@
 package com.example.radarsync.data
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
 import android.location.Location
@@ -15,10 +16,17 @@ class LocationUpdateWorker(appContext: Context, workerParams: WorkerParameters) 
     Worker(appContext, workerParams) {
     @SuppressLint("MissingPermission")
     override fun doWork(): Result {
+
+        val permissionsToRequest = arrayOf(
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_BACKGROUND_LOCATION
+        )
+
         val fusedLocationClient: FusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(applicationContext)
 
-        if (PermissionHelper.checkLocationPermissions(applicationContext)) {
+        if (PermissionHelper.checkPermissions(permissionsToRequest, applicationContext)) {
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 if (location != null) {
                     LocationLiveDataRepository.updateLocation(location)
