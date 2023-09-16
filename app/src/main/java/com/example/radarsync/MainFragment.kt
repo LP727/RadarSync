@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.radarsync.databinding.FragmentMainBinding
 import androidx.lifecycle.Observer
+import androidx.navigation.Navigation.findNavController
 import com.example.radarsync.data.PositionEntity
 import com.example.radarsync.data.PositionListAdapter
 
@@ -82,11 +83,18 @@ class MainFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                // Handle the menu selection
+                if(R.id.action_settings == menuItem.itemId) {
+                    return editSettings()
+                }
                 return true
             }
         })
 
         return binding.root
+    }
+
+    private fun editSettings(): Boolean {
+        // findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
+        return true
     }
 }
