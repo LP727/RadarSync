@@ -9,5 +9,16 @@
         android:id="@+id/mainFragment"
         android:name="com.example.radarsync.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main">
+    <action
+        android:id="@+id/action_settings"
+        app:destination="@+id/settingsFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settingsFragment"
+        android:name="com.example.radarsync.SettingsFragment"
+        android:label="fragment_editor"
+        tools:layout="@layout/fragment_settings">
+
+    </fragment>
 </navigation>
