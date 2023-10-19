@@ -9,12 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.radarsync.databinding.FragmentMainBinding
 import androidx.lifecycle.Observer
-import androidx.navigation.Navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.example.radarsync.data.PositionEntity
 import com.example.radarsync.data.PositionListAdapter
 
@@ -29,7 +30,7 @@ class MainFragment : Fragment() {
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
-        val menuHost = requireActivity()
+
 
         with(binding.recyclerView) {
             setHasFixedSize(true)
@@ -75,6 +76,14 @@ class MainFragment : Fragment() {
             }
         )
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val menuHost = requireActivity()
+
         // Menu code
         menuHost.addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -88,13 +97,12 @@ class MainFragment : Fragment() {
                 }
                 return true
             }
-        })
-
-        return binding.root
+        }, viewLifecycleOwner, Lifecycle.State.RESUMED)
+        // By calling addMenuProdiver with a Lifecyle, the menu will be added and removed automatically
     }
 
     private fun editSettings(): Boolean {
-        // findNavController().navigate(R.id.action_mainFragment_to_settingsFragment)
+        findNavController().navigate(R.id.nav_to_action_settings)
         return true
     }
 }

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.example.radarsync.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
@@ -18,5 +19,10 @@ class SettingsFragment : Fragment() {
         // Inflate the layout for this fragment
         binding = FragmentSettingsBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    private fun saveAndReturn() {
+        // TODO save the settings
+        findNavController().navigateUp()
     }
 }
