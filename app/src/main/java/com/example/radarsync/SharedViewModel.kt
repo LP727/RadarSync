@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.radarsync.data.PositionEntity
+import com.example.radarsync.utilities.CryptoManager
 import com.example.radarsync.utilities.FileHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -23,6 +24,9 @@ class SharedViewModel(private val app: Application) : AndroidViewModel(app) {
     val positionList = MutableLiveData<MutableList<PositionEntity>>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     val currentPosition = MutableLiveData<Location>()
+
+    // TODO: This needs to be moved to the activity and passed to the view model using a factory
+    val cryptoManager = CryptoManager()
     private val listType = Types.newParameterizedType(
         List::class.java, PositionEntity::class.java // custom type for JSON parsing
     )

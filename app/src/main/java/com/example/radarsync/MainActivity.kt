@@ -20,9 +20,9 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.radarsync.data.LocationUpdateWorker
 import com.example.radarsync.ui.theme.RadarSyncTheme
+import com.example.radarsync.utilities.CryptoManager
 import com.example.radarsync.utilities.PermissionHelper.Companion.checkPermissions
 import com.google.android.gms.common.GoogleApiAvailability
-import java.security.KeyStore
 
 class MainActivity : AppCompatActivity() {
     private val requestPermissionLauncher =
@@ -40,11 +40,9 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    private val cryptoManager = CryptoManager()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val ks: KeyStore = KeyStore.getInstance("AndroidKeyStore").apply {
-            load(null)
-        }
 
         checkPermissions()
         checkGooglePlayServices()

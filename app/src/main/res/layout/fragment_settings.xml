@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -30,12 +31,13 @@
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/textView"
+            android:id="@+id/editTextUrl"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:autofillHints=""
             android:hint="@string/url_hint"
-            android:inputType="text" />
+            android:inputType="text"
+            tools:ignore="TextFields" />
 
         <!-- Port Label -->
         <TextView
@@ -46,7 +48,7 @@
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/textView2"
+            android:id="@+id/editTextPort"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:autofillHints=""
@@ -62,7 +64,7 @@
             android:textSize="16sp" />
 
         <EditText
-            android:id="@+id/textView3"
+            android:id="@+id/editTextUsr"
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:autofillHints=""
@@ -85,5 +87,11 @@
             android:ems="10"
             android:hint="@string/password_hint"
             android:inputType="textPassword" />
+
+        <Button
+            android:id="@+id/saveButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save_btn_label" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
