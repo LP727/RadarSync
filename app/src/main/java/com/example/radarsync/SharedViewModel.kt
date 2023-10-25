@@ -20,12 +20,10 @@ import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
-class SharedViewModel(private val app: Application) : AndroidViewModel(app) {
+class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     val positionList = MutableLiveData<MutableList<PositionEntity>>()
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     val currentPosition = MutableLiveData<Location>()
-
-    // TODO: This needs to be moved to the activity and passed to the view model using a factory
     val cryptoManager = CryptoManager()
     private val listType = Types.newParameterizedType(
         List::class.java, PositionEntity::class.java // custom type for JSON parsing

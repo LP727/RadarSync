@@ -29,7 +29,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentMainBinding.inflate(inflater, container, false)
-        viewModel = ViewModelProvider(this).get(SharedViewModel::class.java)
+        viewModel = ViewModelProvider(this)[SharedViewModel::class.java]
 
 
         with(binding.recyclerView) {

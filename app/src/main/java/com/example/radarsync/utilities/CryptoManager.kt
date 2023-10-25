@@ -17,28 +17,28 @@ class CryptoManager {
     }
 
     private val encryptCipher = Cipher.getInstance(TRANSFORMATION).apply {
-        init(Cipher.ENCRYPT_MODE, ks.getKey(KEY_ALIAS, null))
+        init(Cipher.ENCRYPT_MODE, getKey())
     }
 
     // Function used for the decryption cipher because it needs an IV (initialisation vector)
     private fun getDecryptCipher(iv: ByteArray): Cipher {
         return Cipher.getInstance(TRANSFORMATION).apply {
-            init(Cipher.DECRYPT_MODE, getKey(KEY_ALIAS), IvParameterSpec(iv))
+            init(Cipher.DECRYPT_MODE, getKey(), IvParameterSpec(iv))
         }
     }
 
     // Get Key function: Looks for our key in the keystore, if it doesn't exist, it creates it
-    private fun getKey(alias: String): SecretKey {
-       val existingKey = ks.getEntry(alias, null) as? KeyStore.SecretKeyEntry
-        return existingKey?.secretKey ?: createKey(alias)
+    private fun getKey(): SecretKey {
+        val existingKey = ks.getEntry(KEY_ALIAS, null) as? KeyStore.SecretKeyEntry
+        return existingKey?.secretKey ?: createKey()
     }
 
     // Key creation function, should get called if we don't already have a key in our store
-    private fun createKey(alias: String): SecretKey {
+    private fun createKey(): SecretKey {
         return KeyGenerator.getInstance(ALGORITHM, "AndroidKeyStore").apply {
             init(
                 KeyGenParameterSpec.Builder(
-                    alias,
+                    KEY_ALIAS,
                     KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT
                 ).apply {
                     setBlockModes(BLOCK_MODE)
@@ -81,9 +81,12 @@ class CryptoManager {
     // The companion object holds our encryption parameters
     companion object {
         private const val KEY_ALIAS = "SyncKey"
-        private const val ALGORITHM = KeyProperties.KEY_ALGORITHM_AES // AES is a common encryption algorithm
+        private const val ALGORITHM =
+            KeyProperties.KEY_ALGORITHM_AES // AES is a common encryption algorithm
         private const val BLOCK_MODE = KeyProperties.BLOCK_MODE_CBC // CBC is a common block mode
-        private const val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7 // PKCS7 is a common padding scheme
-        private const val TRANSFORMATION = "$ALGORITHM/$BLOCK_MODE/$PADDING" // This is the transformation that will be used to encrypt and decrypt the data
+        private const val PADDING =
+            KeyProperties.ENCRYPTION_PADDING_PKCS7 // PKCS7 is a common padding scheme
+        private const val TRANSFORMATION =
+            "$ALGORITHM/$BLOCK_MODE/$PADDING" // This is the transformation that will be used to encrypt and decrypt the data
     }
 }

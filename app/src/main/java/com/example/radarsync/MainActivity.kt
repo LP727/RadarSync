@@ -20,7 +20,6 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.radarsync.data.LocationUpdateWorker
 import com.example.radarsync.ui.theme.RadarSyncTheme
-import com.example.radarsync.utilities.CryptoManager
 import com.example.radarsync.utilities.PermissionHelper.Companion.checkPermissions
 import com.google.android.gms.common.GoogleApiAvailability
 
@@ -40,7 +39,6 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
-    private val cryptoManager = CryptoManager()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -77,7 +75,7 @@ class MainActivity : AppCompatActivity() {
         val permissionsToRequest = arrayOf(
             ACCESS_FINE_LOCATION,
             ACCESS_COARSE_LOCATION,
-            ACCESS_BACKGROUND_LOCATION
+            ACCESS_BACKGROUND_LOCATION,
         )
 
         if (checkPermissions(permissionsToRequest,this)) {
