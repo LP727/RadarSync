@@ -19,8 +19,8 @@ class PositionListAdapter(private val positionList: List<PositionEntity>) :
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PositionViewHolder {
-        val infalter = LayoutInflater.from(parent.context)
-        val view = infalter.inflate(
+        val inflater = LayoutInflater.from(parent.context)
+        val view = inflater.inflate(
             R.layout.pos_item,
             parent,
             false
@@ -52,16 +52,16 @@ class PositionListAdapter(private val positionList: List<PositionEntity>) :
     }
 
     private fun createLocationFromPosition(pos: PositionEntity): Location {
-        val Loc = Location(pos.name)
-        Loc.latitude = pos.latitude
-        Loc.longitude = pos.longitude
-        Loc.altitude = pos.altitude
-        Loc.accuracy = pos.accuracy
-        Loc.time = pos.time
-        return Loc
+        val loc = Location(pos.name)
+        loc.latitude = pos.latitude
+        loc.longitude = pos.longitude
+        loc.altitude = pos.altitude
+        loc.accuracy = pos.accuracy
+        loc.time = pos.time
+        return loc
     }
 
-    fun getTimeAndDateStringsFromTimestamp(unixTimestamp: Long): Pair<String, String> {
+    private fun getTimeAndDateStringsFromTimestamp(unixTimestamp: Long): Pair<String, String> {
         // Convert the timestamp to a Date object
         val date = Date(unixTimestamp) // Multiply by 1000 to convert to milliseconds
 

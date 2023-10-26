@@ -11,7 +11,7 @@ class FileHelper {
     companion object {
         // Get the user settings from encrypted file, returns default settings if file doesn't exist
         fun loadUserSettings(context: Context, cryptoManager: CryptoManager): UserSettings{
-            val directoryPath = context.getExternalFilesDir(null)?.absolutePath + File.separator + "radarDirectory"
+            val directoryPath = context.getExternalFilesDir("settings")?.absolutePath + File.separator + "radarDirectory"
             val fileName = "radarSettings.txt"
             val file = File(directoryPath, fileName)
             val settings = UserSettings()
@@ -24,7 +24,8 @@ class FileHelper {
         }
 
         fun saveUserSettings(context: Context, cryptoManager: CryptoManager, settings: UserSettings) {
-            val directoryPath = context.getExternalFilesDir(null)?.absolutePath + File.separator + "radarDirectory"
+            // Caching the user settings in an encrypted file
+            val directoryPath = context.getExternalFilesDir("settings")?.absolutePath + File.separator + "radarDirectory"
             val fileName = "radarSettings.txt"
 
             Log.i(
