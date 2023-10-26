@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.radarsync.data.PositionEntity
+import com.example.radarsync.data.UserSettings
 import com.example.radarsync.utilities.CryptoManager
 import com.example.radarsync.utilities.FileHelper
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -25,6 +26,7 @@ class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     val currentPosition = MutableLiveData<Location>()
     val cryptoManager = CryptoManager()
+    var userSettings: UserSettings
     private val listType = Types.newParameterizedType(
         List::class.java, PositionEntity::class.java // custom type for JSON parsing
     )
@@ -32,6 +34,8 @@ class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     init {
         val text = FileHelper.getTextFromAssets(app, "test_positions.json")
 
+        // Load user settings from encrypted file
+        userSettings = FileHelper.loadUserSettings(app, cryptoManager)
         positionList.value = parseText(text)
         requestLocationUpdates()
     }
