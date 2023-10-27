@@ -44,7 +44,7 @@ class MainFragment : Fragment() {
         viewModel.positionList.observe(
             viewLifecycleOwner, Observer
             {
-                adapter = PositionListAdapter(it)
+                adapter = PositionListAdapter(it, viewModel.currentPosition.value)
                 binding.recyclerView.adapter = adapter
                 binding.recyclerView.layoutManager = LinearLayoutManager(activity)
             }

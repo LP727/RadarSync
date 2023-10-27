@@ -11,7 +11,7 @@ import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
 
-class PositionListAdapter(private val positionList: List<PositionEntity>) :
+class PositionListAdapter(private val positionList: List<PositionEntity>, private val userLoc: Location?) :
     RecyclerView.Adapter<PositionListAdapter.PositionViewHolder>() {
 
     inner class PositionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -35,8 +35,9 @@ class PositionListAdapter(private val positionList: List<PositionEntity>) :
         val loc = createLocationFromPosition(pos)
         with(holder.binding) {
             nameText.text = pos.name
-            //TODO : figure out how to calculate distance
-            distanceText.text = "Unknown"
+
+            val distance = if (userLoc!= null) loc.distanceTo(userLoc) else null
+            distanceText.text = distance?.toString() ?: "Unknown"
 
             // TODO : figure out if Glide and BindingAdapter are needed
             latitudeText.text = Location.convert(pos.latitude, Location.FORMAT_DEGREES)
