@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.radarsync.data.PositionEntity
+import com.example.radarsync.data.PositionRepository
 import com.example.radarsync.data.UserSettings
 import com.example.radarsync.utilities.CryptoManager
 import com.example.radarsync.utilities.FileHelper
@@ -22,11 +23,16 @@ import com.squareup.moshi.Types
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 class SharedViewModel(val app: Application) : AndroidViewModel(app) {
-    val positionList = MutableLiveData<MutableList<PositionEntity>>()
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+
     val currentPosition = MutableLiveData<Location>()
     val cryptoManager = CryptoManager()
     var userSettings: UserSettings
+
+    private var dataRepo: PositionRepository
+    var positionList: MutableLiveData<MutableList<PositionEntity>>
+
     private val listType = Types.newParameterizedType(
         List::class.java, PositionEntity::class.java // custom type for JSON parsing
     )
@@ -34,10 +40,15 @@ class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     init {
         val text = FileHelper.getTextFromAssets(app, "test_positions.json")
 
+        requestLocationUpdates()
+
         // Load user settings from encrypted file
         userSettings = FileHelper.loadUserSettings(app, cryptoManager)
+        dataRepo = PositionRepository(app, userSettings)
+        positionList = dataRepo.positionList
+
         positionList.value = parseText(text)
-        requestLocationUpdates()
+
     }
 
     @SuppressLint("MissingPermission")

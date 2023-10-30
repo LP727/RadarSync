@@ -5,6 +5,7 @@ import android.widget.Toast
 import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.INTERNET
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.Text
@@ -76,6 +77,7 @@ class MainActivity : AppCompatActivity() {
             ACCESS_FINE_LOCATION,
             ACCESS_COARSE_LOCATION,
             ACCESS_BACKGROUND_LOCATION,
+            INTERNET,
         )
 
         if (checkPermissions(permissionsToRequest,this)) {

@@ -49,7 +49,7 @@ class SettingsFragment : Fragment() {
 
         val localSettings = UserSettings(
             binding.editTextUrl.text.toString(),
-            binding.editTextPort.text.toString().toIntOrNull(),
+            binding.editTextPort.text.toString().toInt(),
             binding.editTextUsr.text.toString(),
             binding.editTextTextPassword.text.toString()
         )
