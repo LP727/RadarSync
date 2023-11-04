@@ -1,11 +1,11 @@
 # RadarSync
 
 ## Table of Contents
-- [Spec bot](#spec-bot)
+- [Spec bot](#RadarSync)
   - [Table of Contents](#table-of-contents)
   - [About](#about)
   - [Usage](#usage)
-  - [Licence](#licence)
+  - [License](#license)
 
 ## About
 After purchasing my first e-bike, I couldn't help getting worried about it getting stolen and I thought to myself: "Why not install a tracker on it?". That why if my bike suddenly starts moving by itself, I'll know!
@@ -22,5 +22,5 @@ This repository only contains the app itself, I might one day upload the design 
 To use the app, one must either have their server's certificate signed by a recognized authority or place their .cert file in the <code>/app/src/main/res/raw/</code> path
 Then the user must enter their server's path to the positions data, port and credentials in the settings page of the app.
 
-## Licence
+## License
 TODO: Insert a license if the project ever goes somewhere

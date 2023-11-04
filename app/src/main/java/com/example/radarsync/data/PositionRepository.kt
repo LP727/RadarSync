@@ -43,15 +43,13 @@ class BasicAuthInterceptor(user: String, password: String) : Interceptor {
 
 // Class that will be used to access the database to fetch positions (Make Object (singleton) instead?)
 class PositionRepository(val app: Application, private  val settings: UserSettings) {
-    // TODO: create a local positionDao as well as a local position databse
-    //private val positionDao = PositionDatabase.getDatabase(app).positionDao()
 
+    private val positionDao = PositionDatabase.getInstance(app).positionDao()
     val positionList = MutableLiveData<MutableList<PositionEntity>>()
 
     init {
         CoroutineScope(Dispatchers.IO).launch {
-            // TODO: Attempt to fetch data from local database first once implemented
-            callWebService()
+            refreshData()
         }
     }
 
@@ -89,10 +87,8 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
 
                 val service = retrofit.create(PositionService::class.java)
                 val serviceData = service.getPositionData(url).body() ?: emptyList()
-                // TODO: Insert data rather than oberwriting the whole list
-                positionList.postValue(serviceData.toMutableList())
 
-                // TODO insert data into local database
+                positionDao.insertAll(serviceData)
             }
             else {
                 withContext(Dispatchers.Main) {
@@ -121,7 +117,11 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
 
     fun refreshData() {
         CoroutineScope(Dispatchers.IO).launch {
+            // Get latest data from web service into the local database
             callWebService()
+
+            // Post the data from the local database to the positionList
+            positionList.postValue(positionDao.getAll().toMutableList())
         }
     }
 }
