@@ -31,7 +31,6 @@ class MainFragment : Fragment() {
         binding = FragmentMainBinding.inflate(inflater, container, false)
         viewModel = ViewModelProvider(this)[SharedViewModel::class.java]
 
-
         with(binding.recyclerView) {
             setHasFixedSize(true)
             val divider = DividerItemDecoration(

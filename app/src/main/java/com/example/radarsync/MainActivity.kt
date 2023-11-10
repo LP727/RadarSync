@@ -5,8 +5,13 @@ import android.widget.Toast
 import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.FOREGROUND_SERVICE
+import android.Manifest.permission.FOREGROUND_SERVICE_LOCATION
 import android.Manifest.permission.INTERNET
+import android.Manifest.permission.POST_NOTIFICATIONS
+import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,6 +25,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.radarsync.data.LocationUpdateWorker
+import com.example.radarsync.data.PollingService
 import com.example.radarsync.ui.theme.RadarSyncTheme
 import com.example.radarsync.utilities.PermissionHelper.Companion.checkPermissions
 import com.google.android.gms.common.GoogleApiAvailability
@@ -40,12 +46,19 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
+    @RequiresApi(34)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         checkPermissions()
         checkGooglePlayServices()
         startLocationUpdates()
+
+        val startIntent = Intent(this, PollingService::class.java).apply {
+            action = PollingService.Actions.START.toString()
+        }
+        startService(startIntent)
+
         // TODO: Uncomment when I have figured out how to use Compose
 //        setContent {
 //            RadarSyncTheme {
@@ -60,6 +73,13 @@ class MainActivity : AppCompatActivity() {
 //        }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        Intent(PollingService.Actions.STOP.toString()).also {
+            applicationContext.startForegroundService(it)
+        }
+    }
+
     private fun isGooglePlayServicesAvailable(): Boolean {
         val googleApiAvailability = GoogleApiAvailability.getInstance()
         val resultCode = googleApiAvailability.isGooglePlayServicesAvailable(this)
@@ -72,12 +92,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(34)
     private fun checkPermissions() {
         val permissionsToRequest = arrayOf(
             ACCESS_FINE_LOCATION,
             ACCESS_COARSE_LOCATION,
             ACCESS_BACKGROUND_LOCATION,
             INTERNET,
+            FOREGROUND_SERVICE,
+            FOREGROUND_SERVICE_LOCATION,
+            POST_NOTIFICATIONS
         )
 
         if (checkPermissions(permissionsToRequest,this)) {
