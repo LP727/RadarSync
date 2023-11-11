@@ -27,7 +27,7 @@ class PollingService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        when(intent?.action) {
+        when (intent?.action) {
             Actions.START.toString() -> start()
             Actions.STOP.toString() -> stopSelf()
         }
@@ -80,7 +80,8 @@ class PollingService : Service() {
             .build()
 
         // Notify using the NotificationManager
-        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification)
     }
 

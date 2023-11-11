@@ -8,5 +8,5 @@ import retrofit2.http.Url
 interface PositionService {
     // TODO: Ensure that the path is correct
     @GET
-    suspend fun getPositionData(@Url url:String): Response<List<PositionEntity>>
+    suspend fun getPositionData(@Url url: String): Response<List<PositionEntity>>
 }

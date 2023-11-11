@@ -42,7 +42,7 @@ class BasicAuthInterceptor(user: String, password: String) : Interceptor {
 }
 
 // Class that will be used to access the database to fetch positions (Make Object (singleton) instead?)
-class PositionRepository(val app: Application, private  val settings: UserSettings) {
+class PositionRepository(val app: Application, private val settings: UserSettings) {
 
     private val positionDao = PositionDatabase.getInstance(app).positionDao()
     val positionList = MutableLiveData<MutableList<PositionEntity>>()
@@ -55,7 +55,7 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
 
     @WorkerThread
     suspend fun callWebService() {
-        if(networkAvailable()) {
+        if (networkAvailable()) {
             val moshi = Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
                 .build()
@@ -74,7 +74,7 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
                 val okHttpClient = OkHttpClient.Builder()
                     .sslSocketFactory(sslContext.socketFactory, customTrustManager)
                     .hostnameVerifier { _, _ -> true } // Bypass hostname verification
-                    .addInterceptor (
+                    .addInterceptor(
                         BasicAuthInterceptor(settings.username, settings.password)
                     )
                     .build()
@@ -89,8 +89,7 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
                 val serviceData = service.getPositionData(url).body() ?: emptyList()
 
                 positionDao.insertAll(serviceData)
-            }
-            else {
+            } else {
                 withContext(Dispatchers.Main) {
                     Toast.makeText(app, "Invalid URL", Toast.LENGTH_LONG).show()
                 }
@@ -106,6 +105,7 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
         val certificateFactory = CertificateFactory.getInstance("X.509")
         return certificateFactory.generateCertificate(certificateStream) as X509Certificate
     }
+
     private fun networkAvailable() =
         (app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
             getNetworkCapabilities(activeNetwork)?.run {

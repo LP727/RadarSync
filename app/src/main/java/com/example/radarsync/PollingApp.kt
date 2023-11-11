@@ -5,7 +5,7 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 
-class PollingApp: Application() {
+class PollingApp : Application() {
     override fun onCreate() {
         super.onCreate()
 

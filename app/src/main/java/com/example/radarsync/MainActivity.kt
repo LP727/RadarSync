@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
     @RequiresApi(34)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -104,7 +105,7 @@ class MainActivity : AppCompatActivity() {
             POST_NOTIFICATIONS
         )
 
-        if (checkPermissions(permissionsToRequest,this)) {
+        if (checkPermissions(permissionsToRequest, this)) {
             // All requested permissions are granted. Continue with your app's workflow.
             setContentView(R.layout.activity_main)
         } else {

@@ -25,7 +25,7 @@ class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     val cryptoManager = CryptoManager()
     var userSettings: UserSettings
 
-     var dataRepo: PositionRepository
+    var dataRepo: PositionRepository
     var positionList: MutableLiveData<MutableList<PositionEntity>>
 
     init {

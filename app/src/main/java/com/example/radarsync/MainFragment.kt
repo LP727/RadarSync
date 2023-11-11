@@ -91,7 +91,7 @@ class MainFragment : Fragment() {
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
-                if(R.id.action_settings == menuItem.itemId) {
+                if (R.id.action_settings == menuItem.itemId) {
                     return editSettings()
                 }
                 return true
