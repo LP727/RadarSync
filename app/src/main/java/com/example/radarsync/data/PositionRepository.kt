@@ -1,6 +1,5 @@
 package com.example.radarsync.data
 
-import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
@@ -42,9 +41,9 @@ class BasicAuthInterceptor(user: String, password: String) : Interceptor {
 }
 
 // Class that will be used to access the database to fetch positions (Make Object (singleton) instead?)
-class PositionRepository(val app: Application, private val settings: UserSettings) {
+class PositionRepository(val context: Context, private val settings: UserSettings) {
 
-    private val positionDao = PositionDatabase.getInstance(app).positionDao()
+    private val positionDatabase = PositionDatabase.getInstance(context)
     val positionList = MutableLiveData<MutableList<PositionEntity>>()
 
     init {
@@ -88,17 +87,16 @@ class PositionRepository(val app: Application, private val settings: UserSetting
                 val service = retrofit.create(PositionService::class.java)
                 val serviceData = service.getPositionData(url).body() ?: emptyList()
 
-                positionDao.insertAll(serviceData)
+                positionDatabase.positionDao().insertAll(serviceData)
             } else {
                 withContext(Dispatchers.Main) {
-                    Toast.makeText(app, "Invalid URL", Toast.LENGTH_LONG).show()
+                    Toast.makeText(context, "Invalid URL", Toast.LENGTH_LONG).show()
                 }
             }
         }
     }
 
     private fun readCustomCertificate(): X509Certificate {
-        val context = app.applicationContext
         // NOTE: This is a self-signed certificate that I created for my local server,
         // it needs to be added manually  in res/raw for the app to work
         val certificateStream = context.resources.openRawResource(R.raw.server_certificate)
@@ -107,7 +105,7 @@ class PositionRepository(val app: Application, private val settings: UserSetting
     }
 
     private fun networkAvailable() =
-        (app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
+        (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
             getNetworkCapabilities(activeNetwork)?.run {
                 hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
                         || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
@@ -121,7 +119,7 @@ class PositionRepository(val app: Application, private val settings: UserSetting
             callWebService()
 
             // Post the data from the local database to the positionList
-            positionList.postValue(positionDao.getAll().toMutableList())
+            positionList.postValue(positionDatabase.positionDao().getAll().toMutableList())
         }
     }
 }

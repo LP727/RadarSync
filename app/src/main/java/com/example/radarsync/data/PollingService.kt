@@ -8,11 +8,21 @@ import android.content.Context
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
+import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.radarsync.LOG_TAG
 import com.example.radarsync.MainActivity
+import com.example.radarsync.utilities.CryptoManager
+import com.example.radarsync.utilities.FileHelper
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 
 class PollingService : Service() {
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private lateinit var positionRepository: PositionRepository
+    private lateinit var userSettings: UserSettings
+    private val cryptoManager = CryptoManager()
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "polling_channel"
         private const val NOTIFICATION_ID = 1
@@ -29,12 +39,15 @@ class PollingService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         when (intent?.action) {
             Actions.START.toString() -> start()
-            Actions.STOP.toString() -> stopSelf()
+            Actions.STOP.toString() -> stop()
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
     private fun start() {
+        // Load user settings and initialize repository
+        userSettings = FileHelper.loadUserSettings(this, cryptoManager)
+        positionRepository = PositionRepository(this, userSettings)
 
         handler.post(fetchDataRunnable)
 
@@ -45,6 +58,17 @@ class PollingService : Service() {
             .build()
 
         startForeground(NOTIFICATION_ID, notification)
+    }
+
+    private fun stop() {
+        // Remove the callbacks to stop data fetching
+        handler.removeCallbacks(fetchDataRunnable)
+
+        // Stop the foreground service
+        stopForeground(STOP_FOREGROUND_REMOVE)
+
+        // Stop the service itself
+        stopSelf()
     }
 
     private val fetchDataRunnable = object : Runnable {
@@ -61,7 +85,13 @@ class PollingService : Service() {
         // Implement your logic to fetch data here
         // For example, you can invoke a repository method to fetch data
         // Update your database or perform any necessary actions
-        showNotification("Data Fetched", "New data is available!")
+
+        Log.d(LOG_TAG, "Fetching data")
+        positionRepository.refreshData()
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        // TODO : Implement taking action on new data
+        //showNotification("Data Fetched", "New data is available!")
     }
 
 
