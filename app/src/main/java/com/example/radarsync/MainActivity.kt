@@ -6,7 +6,6 @@ import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.FOREGROUND_SERVICE
-import android.Manifest.permission.FOREGROUND_SERVICE_LOCATION
 import android.Manifest.permission.INTERNET
 import android.Manifest.permission.POST_NOTIFICATIONS
 import android.content.Intent
@@ -101,7 +100,6 @@ class MainActivity : AppCompatActivity() {
             ACCESS_BACKGROUND_LOCATION,
             INTERNET,
             FOREGROUND_SERVICE,
-            FOREGROUND_SERVICE_LOCATION,
             POST_NOTIFICATIONS
         )
 

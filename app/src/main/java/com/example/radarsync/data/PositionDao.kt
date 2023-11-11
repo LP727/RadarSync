@@ -10,7 +10,7 @@ interface PositionDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertPosition(position: PositionEntity)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertAll(positions: List<PositionEntity>)
 
     @Query("SELECT * FROM pos ORDER BY time ASC")

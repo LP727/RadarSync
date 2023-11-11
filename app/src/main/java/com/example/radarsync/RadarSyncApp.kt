@@ -5,9 +5,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 
-class PollingApp : Application() {
+class RadarSyncApp : Application() {
     override fun onCreate() {
         super.onCreate()
+        DependencyProvider.initialize(this)
 
         val channel = NotificationChannel(
             "polling_channel",

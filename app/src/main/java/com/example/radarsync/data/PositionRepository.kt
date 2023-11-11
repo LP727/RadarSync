@@ -1,8 +1,10 @@
 package com.example.radarsync.data
 
+import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import com.squareup.moshi.Moshi
@@ -12,11 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import android.widget.Toast
+import com.example.radarsync.LOG_TAG
 import com.example.radarsync.POSITION_URL_ENDPOINT
 import com.example.radarsync.R
 import com.example.radarsync.utilities.CustomTrustManager
-import kotlinx.coroutines.withContext
 import okhttp3.Credentials
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
@@ -41,15 +42,18 @@ class BasicAuthInterceptor(user: String, password: String) : Interceptor {
 }
 
 // Class that will be used to access the database to fetch positions (Make Object (singleton) instead?)
-class PositionRepository(val context: Context, private val settings: UserSettings) {
+class PositionRepository(val app: Application) {
 
-    private val positionDatabase = PositionDatabase.getInstance(context)
+    private val positionDatabase = PositionDatabase.getInstance(app)
     val positionList = MutableLiveData<MutableList<PositionEntity>>()
+    private var settings = UserSettings()
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            refreshData()
-        }
+    fun updateSettings(newSettings: UserSettings) {
+        settings.url = newSettings.url
+        settings.port = newSettings.port
+        settings.username = newSettings.username
+        settings.password = newSettings.password
+        refreshData()
     }
 
     @WorkerThread
@@ -89,9 +93,7 @@ class PositionRepository(val context: Context, private val settings: UserSetting
 
                 positionDatabase.positionDao().insertAll(serviceData)
             } else {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(context, "Invalid URL", Toast.LENGTH_LONG).show()
-                }
+                Log.d(LOG_TAG, "Invalid URL")
             }
         }
     }
@@ -99,13 +101,13 @@ class PositionRepository(val context: Context, private val settings: UserSetting
     private fun readCustomCertificate(): X509Certificate {
         // NOTE: This is a self-signed certificate that I created for my local server,
         // it needs to be added manually  in res/raw for the app to work
-        val certificateStream = context.resources.openRawResource(R.raw.server_certificate)
+        val certificateStream = app.resources.openRawResource(R.raw.server_certificate)
         val certificateFactory = CertificateFactory.getInstance("X.509")
         return certificateFactory.generateCertificate(certificateStream) as X509Certificate
     }
 
     private fun networkAvailable() =
-        (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
+        (app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
             getNetworkCapabilities(activeNetwork)?.run {
                 hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)
                         || hasTransport(NetworkCapabilities.TRANSPORT_WIFI)

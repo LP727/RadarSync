@@ -10,10 +10,9 @@ import android.os.IBinder
 import android.os.Looper
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.example.radarsync.DependencyProvider
 import com.example.radarsync.LOG_TAG
 import com.example.radarsync.MainActivity
-import com.example.radarsync.utilities.CryptoManager
-import com.example.radarsync.utilities.FileHelper
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
@@ -21,8 +20,6 @@ class PollingService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
     private lateinit var positionRepository: PositionRepository
-    private lateinit var userSettings: UserSettings
-    private val cryptoManager = CryptoManager()
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "polling_channel"
         private const val NOTIFICATION_ID = 1
@@ -45,9 +42,7 @@ class PollingService : Service() {
     }
 
     private fun start() {
-        // Load user settings and initialize repository
-        userSettings = FileHelper.loadUserSettings(this, cryptoManager)
-        positionRepository = PositionRepository(this, userSettings)
+        positionRepository = DependencyProvider.getPositionRepository()
 
         handler.post(fetchDataRunnable)
 

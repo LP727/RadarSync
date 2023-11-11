@@ -25,7 +25,7 @@ class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     val cryptoManager = CryptoManager()
     var userSettings: UserSettings
 
-    var dataRepo: PositionRepository
+    private var dataRepo: PositionRepository
     var positionList: MutableLiveData<MutableList<PositionEntity>>
 
     init {
@@ -33,7 +33,8 @@ class SharedViewModel(val app: Application) : AndroidViewModel(app) {
 
         // Load user settings from encrypted file
         userSettings = FileHelper.loadUserSettings(app, cryptoManager)
-        dataRepo = PositionRepository(app, userSettings)
+        dataRepo = DependencyProvider.getPositionRepository()
+        dataRepo.updateSettings(userSettings)
         positionList = dataRepo.positionList
     }
 
