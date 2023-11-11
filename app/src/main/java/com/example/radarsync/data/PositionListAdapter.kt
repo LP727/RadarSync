@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.radarsync.R
 import com.example.radarsync.databinding.PosItemBinding
+import com.example.radarsync.utilities.PositionLocationInterface
 import java.sql.Date
 import java.text.SimpleDateFormat
 import java.util.Locale
@@ -32,7 +33,7 @@ class PositionListAdapter(private val positionList: List<PositionEntity>, privat
 
     override fun onBindViewHolder(holder: PositionViewHolder, position: Int) {
         val pos = positionList[position]
-        val loc = createLocationFromPosition(pos)
+        val loc = PositionLocationInterface.createLocationFromPosition(pos)
         with(holder.binding) {
             nameText.text = pos.name
 
@@ -50,16 +51,6 @@ class PositionListAdapter(private val positionList: List<PositionEntity>, privat
             latestTimeText.text = timeString
             latestDateText.text = dateString
         }
-    }
-
-    private fun createLocationFromPosition(pos: PositionEntity): Location {
-        val loc = Location(pos.name)
-        loc.latitude = pos.latitude
-        loc.longitude = pos.longitude
-        loc.altitude = pos.altitude
-        loc.accuracy = pos.accuracy
-        loc.time = pos.time
-        return loc
     }
 
     private fun getTimeAndDateStringsFromTimestamp(unixTimestamp: Long): Pair<String, String> {

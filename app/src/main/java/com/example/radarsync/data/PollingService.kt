@@ -1,24 +1,29 @@
 package com.example.radarsync.data
 
+import android.Manifest
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import com.example.radarsync.DependencyProvider
 import com.example.radarsync.LOG_TAG
 import com.example.radarsync.MainActivity
+import com.example.radarsync.utilities.PositionLocationInterface
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 
 class PollingService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-
+    private lateinit var userLocation: Location
     private lateinit var positionRepository: PositionRepository
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "polling_channel"
@@ -84,9 +89,22 @@ class PollingService : Service() {
         Log.d(LOG_TAG, "Fetching data")
         positionRepository.refreshData()
 
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        // TODO : Implement taking action on new data
-        //showNotification("Data Fetched", "New data is available!")
+        // Update user location
+        getLastKnownLocation()
+
+        if(positionRepository.positionList.value == null) {
+            Log.d(LOG_TAG, "No positions found")
+            return
+        }
+
+        for(position in positionRepository.positionList.value!!) {
+            val location = PositionLocationInterface.createLocationFromPosition(position)
+
+            // Notify on 500m proximity. TODO: make this customizable per position in UI
+            if(userLocation.distanceTo(location) < 500) {
+                showNotification("User is within 500 meters of ${position.name}", "Current distance is ${userLocation.distanceTo(location)}")
+            }
+        }
     }
 
 
@@ -108,6 +126,31 @@ class PollingService : Service() {
         val notificationManager =
             getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         notificationManager.notify(NOTIFICATION_ID, notification)
+    }
+
+    private fun getLastKnownLocation() {
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            Log.d(LOG_TAG, "No permissions to check location")
+            return
+        }
+        fusedLocationClient.lastLocation
+            .addOnSuccessListener { location: Location? ->
+                // Handle the location here
+                if (location != null) {
+                    userLocation = location
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e(LOG_TAG, "Location settings not satisfied: $e")
+            }
     }
 
     enum class Actions {
