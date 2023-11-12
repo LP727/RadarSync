@@ -9,9 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.radarsync.R
 import com.example.radarsync.databinding.PosItemBinding
 import com.example.radarsync.utilities.PositionLocationInterface
-import java.sql.Date
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.radarsync.utilities.TimeUtilities
 
 class PositionListAdapter(private val positionList: List<PositionEntity>, private val userLoc: Location?) :
     RecyclerView.Adapter<PositionListAdapter.PositionViewHolder>() {
@@ -58,24 +56,9 @@ class PositionListAdapter(private val positionList: List<PositionEntity>, privat
             accuracyText.text = loc.accuracy.toString()
 
             // Compute latest time and date from unix timestamp
-            val (timeString, dateString) = getTimeAndDateStringsFromTimestamp(loc.time)
+            val (timeString, dateString) = TimeUtilities.getTimeAndDateStringsFromTimestamp(loc.time)
             latestTimeText.text = timeString
             latestDateText.text = dateString
         }
-    }
-
-    private fun getTimeAndDateStringsFromTimestamp(unixTimestamp: Long): Pair<String, String> {
-        // Convert the timestamp to a Date object
-        val date = Date(unixTimestamp) // Multiply by 1000 to convert to milliseconds
-
-        // Format the time string
-        val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-        val timeString = timeFormat.format(date)
-
-        // Format the date string
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val dateString = dateFormat.format(date)
-
-        return Pair(timeString, dateString)
     }
 }

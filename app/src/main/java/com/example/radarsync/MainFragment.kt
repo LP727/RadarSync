@@ -1,5 +1,6 @@
 package com.example.radarsync
 
+import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -16,8 +17,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.radarsync.databinding.FragmentMainBinding
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.example.radarsync.data.PositionEntity
 import com.example.radarsync.data.PositionListAdapter
+import com.example.radarsync.utilities.TimeUtilities
 
 class MainFragment : Fragment() {
     private lateinit var viewModel: SharedViewModel
@@ -53,25 +54,14 @@ class MainFragment : Fragment() {
         viewModel.currentPosition.observe(
             viewLifecycleOwner, Observer
             {
-                val newPosition = PositionEntity(
-                    "random id",
-                    it.latitude,
-                    it.longitude,
-                    it.altitude,
-                    it.accuracy,
-                    "Me",
-                    it.time
-                )
+                binding.userPos.latitudeText.text = Location.convert(it.latitude, Location.FORMAT_DEGREES)
+                binding.userPos.longitudeText.text = Location.convert(it.longitude, Location.FORMAT_DEGREES)
+                binding.userPos.altitudeText.text = Location.convert(it.altitude, Location.FORMAT_DEGREES)
+                binding.userPos.accuracyText.text = it.accuracy.toString()
 
-                val currentList = viewModel.positionList.value ?: mutableListOf<PositionEntity>()
-                // Check if the id is already in the list
-                val index = currentList.indexOfFirst { pos -> pos.id == newPosition.id }
-                if (index == -1) {
-                    currentList.add(newPosition)
-                } else {
-                    currentList[index] = newPosition
-                }
-                viewModel.positionList.value = currentList
+                val (timeString, dateString) = TimeUtilities.getTimeAndDateStringsFromTimestamp(it.time)
+                binding.userPos.latestTimeText.text = timeString
+                binding.userPos.latestDateText.text = dateString
             }
         )
 
