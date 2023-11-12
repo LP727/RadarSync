@@ -1,5 +1,6 @@
 package com.example.radarsync.data
 
+import android.annotation.SuppressLint
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
@@ -31,16 +32,26 @@ class PositionListAdapter(private val positionList: List<PositionEntity>, privat
 
     override fun getItemCount() = positionList.size
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: PositionViewHolder, position: Int) {
         val pos = positionList[position]
         val loc = PositionLocationInterface.createLocationFromPosition(pos)
         with(holder.binding) {
             nameText.text = pos.name
 
+            val displayedDistance : String
             val distance = if (userLoc!= null) loc.distanceTo(userLoc) else null
-            distanceText.text = distance?.toString() ?: "Unknown"
+            if(distance != null) {
+                val distanceKm = distance.div(1000)
+                displayedDistance = "${distanceKm}km"
+                if(distance < 500) {
+                    distanceText.setTextColor(R.color.teal_200)
+                }
+            } else {
+                displayedDistance = "Unknown"
+            }
 
-            // TODO : figure out if Glide and BindingAdapter are needed
+            distanceText.text = displayedDistance
             latitudeText.text = Location.convert(pos.latitude, Location.FORMAT_DEGREES)
             longitudeText.text = Location.convert(pos.longitude, Location.FORMAT_DEGREES)
             altitudeText.text = Location.convert(pos.altitude, Location.FORMAT_DEGREES)

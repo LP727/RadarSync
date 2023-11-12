@@ -101,7 +101,7 @@ class PollingService : Service() {
             val location = PositionLocationInterface.createLocationFromPosition(position)
 
             // Notify on 500m proximity. TODO: make this customizable per position in UI
-            if(userLocation.distanceTo(location) < 500) {
+            if(userLocation.distanceTo(location) < 500 && position.name != "Me") {
                 showNotification("User is within 500 meters of ${position.name}", "Current distance is ${userLocation.distanceTo(location)}")
             }
         }
