@@ -5,21 +5,16 @@ import android.widget.Toast
 import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
+import android.Manifest.permission.FOREGROUND_SERVICE
 import android.Manifest.permission.INTERNET
+import android.Manifest.permission.POST_NOTIFICATIONS
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.work.Constraints
-import androidx.work.ExistingPeriodicWorkPolicy
-import androidx.work.ExistingWorkPolicy
-import androidx.work.NetworkType
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import com.example.radarsync.data.LocationUpdateWorker
 import com.example.radarsync.ui.theme.RadarSyncTheme
 import com.example.radarsync.utilities.PermissionHelper.Companion.checkPermissions
 import com.google.android.gms.common.GoogleApiAvailability
@@ -40,12 +35,15 @@ class MainActivity : AppCompatActivity() {
                 ).show()
             }
         }
+
+    @RequiresApi(34)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         checkPermissions()
         checkGooglePlayServices()
-        startLocationUpdates()
+
+
         // TODO: Uncomment when I have figured out how to use Compose
 //        setContent {
 //            RadarSyncTheme {
@@ -72,15 +70,18 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    @RequiresApi(34)
     private fun checkPermissions() {
         val permissionsToRequest = arrayOf(
             ACCESS_FINE_LOCATION,
             ACCESS_COARSE_LOCATION,
             ACCESS_BACKGROUND_LOCATION,
             INTERNET,
+            FOREGROUND_SERVICE,
+            POST_NOTIFICATIONS
         )
 
-        if (checkPermissions(permissionsToRequest,this)) {
+        if (checkPermissions(permissionsToRequest, this)) {
             // All requested permissions are granted. Continue with your app's workflow.
             setContentView(R.layout.activity_main)
         } else {
@@ -92,36 +93,6 @@ class MainActivity : AppCompatActivity() {
     private fun requestPermissions(permissions: Array<String>) {
         // Launch the permission request
         requestPermissionLauncher.launch(permissions)
-    }
-
-    private fun startLocationUpdates() {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-
-        val initialWorkRequest = OneTimeWorkRequestBuilder<LocationUpdateWorker>()
-            .setConstraints(constraints)
-            .build()
-
-        val periodicWorkRequest = PeriodicWorkRequestBuilder<LocationUpdateWorker>(
-            15,
-            java.util.concurrent.TimeUnit.MINUTES
-        )
-            .setConstraints(constraints)
-            .build()
-
-        val workManager = WorkManager.getInstance(this)
-        workManager.enqueueUniqueWork(
-            RADAR_SYNC_LOCAL,
-            ExistingWorkPolicy.REPLACE,
-            initialWorkRequest
-        )
-
-        workManager.enqueueUniquePeriodicWork(
-            RADAR_SYNC_LOCAL,
-            ExistingPeriodicWorkPolicy.CANCEL_AND_REENQUEUE,
-            periodicWorkRequest
-        )
     }
 }
 

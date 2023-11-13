@@ -29,17 +29,13 @@ class SharedViewModel(val app: Application) : AndroidViewModel(app) {
     var positionList: MutableLiveData<MutableList<PositionEntity>>
 
     init {
-        val text = FileHelper.getTextFromAssets(app, "test_positions.json")
-
         requestLocationUpdates()
 
         // Load user settings from encrypted file
         userSettings = FileHelper.loadUserSettings(app, cryptoManager)
-        dataRepo = PositionRepository(app, userSettings)
+        dataRepo = DependencyProvider.getPositionRepository()
+        dataRepo.updateSettings(userSettings)
         positionList = dataRepo.positionList
-
-        positionList.value = FileHelper.parseText(text)
-
     }
 
     @SuppressLint("MissingPermission")

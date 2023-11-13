@@ -12,4 +12,14 @@
     <string name="password_hint">Enter your password</string>
     <string name="settings_title">Settings</string>
     <string name="save_btn_label">Save settings</string>
+    <string name="last_updated_at">Last updated at:</string>
+    <string name="last_updated_date">on:</string>
+    <string name="lat">Lat:</string>
+    <string name="lon">Lon:</string>
+    <string name="alt">Alt:</string>
+    <string name="acc">Acc:</string>
+    <string name="user_position">You Are Here!</string>
+    <string name="poll_switch">Data Polling</string>
+    <string name="not_polling">Not polling</string>
+    <string name="polling">Polling</string>
 </resources>

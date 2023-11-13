@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/paynes_grey"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/userPosition"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginEnd="4dp"
+        android:text="@string/user_position"
+        android:textAlignment="center"
+        android:textColor="@color/black_bean"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Name" />
+
+    <TextView
+        android:id="@+id/latitudeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/lat"
+        app:layout_constraintTop_toTopOf="@+id/lat"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Latitude" />
+
+    <TextView
+        android:id="@+id/longitudeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/latitudeText"
+        app:layout_constraintStart_toEndOf="@+id/lon"
+        app:layout_constraintTop_toTopOf="@+id/latitudeText"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Longitude" />
+
+    <TextView
+        android:id="@+id/altitudeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/longitudeText"
+        app:layout_constraintStart_toEndOf="@+id/alt"
+        app:layout_constraintTop_toTopOf="@+id/longitudeText"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="Altitude" />
+
+    <TextView
+        android:id="@+id/accuracyText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@+id/acc"
+        app:layout_constraintTop_toTopOf="@+id/altitudeText"
+        tools:text="Accuracy" />
+
+    <TextView
+        android:id="@+id/latestTimeText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/lastUpdatedTime"
+        app:layout_constraintStart_toEndOf="@+id/lastUpdatedTime"
+        app:layout_constraintTop_toTopOf="@+id/lastUpdatedTime"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="LatestTIme" />
+
+    <TextView
+        android:id="@+id/latestDateText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/lastUpdatedDate"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.116"
+        app:layout_constraintStart_toEndOf="@+id/lastUpdatedDate"
+        app:layout_constraintTop_toTopOf="@+id/lastUpdatedDate"
+        app:layout_constraintVertical_bias="0.0"
+        tools:text="LatestDate" />
+
+    <TextView
+        android:id="@+id/lastUpdatedTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="@string/last_updated_at"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/lat"
+        app:layout_constraintTop_toBottomOf="@+id/longitudeText" />
+
+    <TextView
+        android:id="@+id/lastUpdatedDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/last_updated_date"
+        app:layout_constraintBottom_toBottomOf="@+id/latestTimeText"
+        app:layout_constraintStart_toEndOf="@+id/latestTimeText"
+        app:layout_constraintTop_toTopOf="@+id/latestTimeText" />
+
+    <TextView
+        android:id="@+id/lat"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/lat"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userPosition"
+        app:layout_constraintVertical_bias="0.224" />
+
+    <TextView
+        android:id="@+id/lon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/lon"
+        app:layout_constraintBottom_toBottomOf="@+id/lat"
+        app:layout_constraintStart_toEndOf="@+id/latitudeText"
+        app:layout_constraintTop_toTopOf="@+id/lat"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/alt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/alt"
+        app:layout_constraintBottom_toBottomOf="@+id/lon"
+        app:layout_constraintStart_toEndOf="@+id/longitudeText"
+        app:layout_constraintTop_toTopOf="@+id/lon" />
+
+    <TextView
+        android:id="@+id/acc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/acc"
+        app:layout_constraintBottom_toBottomOf="@+id/alt"
+        app:layout_constraintStart_toEndOf="@+id/altitudeText"
+        app:layout_constraintTop_toTopOf="@+id/alt"
+        app:layout_constraintVertical_bias="0.0" />
+</androidx.constraintlayout.widget.ConstraintLayout>

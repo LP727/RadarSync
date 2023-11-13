@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 import com.squareup.moshi.Moshi
@@ -13,11 +14,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import android.widget.Toast
+import com.example.radarsync.LOG_TAG
 import com.example.radarsync.POSITION_URL_ENDPOINT
 import com.example.radarsync.R
 import com.example.radarsync.utilities.CustomTrustManager
-import kotlinx.coroutines.withContext
 import okhttp3.Credentials
 import okhttp3.HttpUrl
 import okhttp3.Interceptor
@@ -42,22 +42,23 @@ class BasicAuthInterceptor(user: String, password: String) : Interceptor {
 }
 
 // Class that will be used to access the database to fetch positions (Make Object (singleton) instead?)
-class PositionRepository(val app: Application, private  val settings: UserSettings) {
-    // TODO: create a local positionDao as well as a local position databse
-    //private val positionDao = PositionDatabase.getDatabase(app).positionDao()
+class PositionRepository(val app: Application) {
 
+    private val positionDatabase = PositionDatabase.getInstance(app)
     val positionList = MutableLiveData<MutableList<PositionEntity>>()
+    private var settings = UserSettings()
 
-    init {
-        CoroutineScope(Dispatchers.IO).launch {
-            // TODO: Attempt to fetch data from local database first once implemented
-            callWebService()
-        }
+    fun updateSettings(newSettings: UserSettings) {
+        settings.url = newSettings.url
+        settings.port = newSettings.port
+        settings.username = newSettings.username
+        settings.password = newSettings.password
+        refreshData()
     }
 
     @WorkerThread
     suspend fun callWebService() {
-        if(networkAvailable()) {
+        if (networkAvailable()) {
             val moshi = Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
                 .build()
@@ -76,7 +77,7 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
                 val okHttpClient = OkHttpClient.Builder()
                     .sslSocketFactory(sslContext.socketFactory, customTrustManager)
                     .hostnameVerifier { _, _ -> true } // Bypass hostname verification
-                    .addInterceptor (
+                    .addInterceptor(
                         BasicAuthInterceptor(settings.username, settings.password)
                     )
                     .build()
@@ -89,27 +90,22 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
 
                 val service = retrofit.create(PositionService::class.java)
                 val serviceData = service.getPositionData(url).body() ?: emptyList()
-                // TODO: Insert data rather than oberwriting the whole list
-                positionList.postValue(serviceData.toMutableList())
 
-                // TODO insert data into local database
-            }
-            else {
-                withContext(Dispatchers.Main) {
-                    Toast.makeText(app, "Invalid URL", Toast.LENGTH_LONG).show()
-                }
+                positionDatabase.positionDao().insertAll(serviceData)
+            } else {
+                Log.d(LOG_TAG, "Invalid URL")
             }
         }
     }
 
     private fun readCustomCertificate(): X509Certificate {
-        val context = app.applicationContext
         // NOTE: This is a self-signed certificate that I created for my local server,
         // it needs to be added manually  in res/raw for the app to work
-        val certificateStream = context.resources.openRawResource(R.raw.server_certificate)
+        val certificateStream = app.resources.openRawResource(R.raw.server_certificate)
         val certificateFactory = CertificateFactory.getInstance("X.509")
         return certificateFactory.generateCertificate(certificateStream) as X509Certificate
     }
+
     private fun networkAvailable() =
         (app.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).run {
             getNetworkCapabilities(activeNetwork)?.run {
@@ -121,7 +117,11 @@ class PositionRepository(val app: Application, private  val settings: UserSettin
 
     fun refreshData() {
         CoroutineScope(Dispatchers.IO).launch {
+            // Get latest data from web service into the local database
             callWebService()
+
+            // Post the data from the local database to the positionList
+            positionList.postValue(positionDatabase.positionDao().getAll().toMutableList())
         }
     }
 }

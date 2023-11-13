@@ -1,5 +1,6 @@
 package com.example.radarsync.data
 
+import android.annotation.SuppressLint
 import android.location.Location
 import android.view.LayoutInflater
 import android.view.View
@@ -7,9 +8,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.radarsync.R
 import com.example.radarsync.databinding.PosItemBinding
-import java.sql.Date
-import java.text.SimpleDateFormat
-import java.util.Locale
+import com.example.radarsync.utilities.PositionLocationInterface
+import com.example.radarsync.utilities.TimeUtilities
 
 class PositionListAdapter(private val positionList: List<PositionEntity>, private val userLoc: Location?) :
     RecyclerView.Adapter<PositionListAdapter.PositionViewHolder>() {
@@ -30,50 +30,35 @@ class PositionListAdapter(private val positionList: List<PositionEntity>, privat
 
     override fun getItemCount() = positionList.size
 
+    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: PositionViewHolder, position: Int) {
         val pos = positionList[position]
-        val loc = createLocationFromPosition(pos)
+        val loc = PositionLocationInterface.createLocationFromPosition(pos)
         with(holder.binding) {
             nameText.text = pos.name
 
+            val displayedDistance : String
             val distance = if (userLoc!= null) loc.distanceTo(userLoc) else null
-            distanceText.text = distance?.toString() ?: "Unknown"
+            if(distance != null) {
+                val distanceKm = distance.div(1000)
+                displayedDistance = "${distanceKm}km"
+                if(distance < 500) {
+                    distanceText.setTextColor(R.color.teal_200)
+                }
+            } else {
+                displayedDistance = "Unknown"
+            }
 
-            // TODO : figure out if Glide and BindingAdapter are needed
+            distanceText.text = displayedDistance
             latitudeText.text = Location.convert(pos.latitude, Location.FORMAT_DEGREES)
             longitudeText.text = Location.convert(pos.longitude, Location.FORMAT_DEGREES)
             altitudeText.text = Location.convert(pos.altitude, Location.FORMAT_DEGREES)
             accuracyText.text = loc.accuracy.toString()
 
             // Compute latest time and date from unix timestamp
-            val (timeString, dateString) = getTimeAndDateStringsFromTimestamp(loc.time)
+            val (timeString, dateString) = TimeUtilities.getTimeAndDateStringsFromTimestamp(loc.time)
             latestTimeText.text = timeString
             latestDateText.text = dateString
         }
-    }
-
-    private fun createLocationFromPosition(pos: PositionEntity): Location {
-        val loc = Location(pos.name)
-        loc.latitude = pos.latitude
-        loc.longitude = pos.longitude
-        loc.altitude = pos.altitude
-        loc.accuracy = pos.accuracy
-        loc.time = pos.time
-        return loc
-    }
-
-    private fun getTimeAndDateStringsFromTimestamp(unixTimestamp: Long): Pair<String, String> {
-        // Convert the timestamp to a Date object
-        val date = Date(unixTimestamp) // Multiply by 1000 to convert to milliseconds
-
-        // Format the time string
-        val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
-        val timeString = timeFormat.format(date)
-
-        // Format the date string
-        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-        val dateString = dateFormat.format(date)
-
-        return Pair(timeString, dateString)
     }
 }
