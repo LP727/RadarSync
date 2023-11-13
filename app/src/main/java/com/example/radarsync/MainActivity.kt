@@ -8,7 +8,6 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.Manifest.permission.FOREGROUND_SERVICE
 import android.Manifest.permission.INTERNET
 import android.Manifest.permission.POST_NOTIFICATIONS
-import android.content.Intent
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +23,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.example.radarsync.data.LocationUpdateWorker
-import com.example.radarsync.data.PollingService
 import com.example.radarsync.ui.theme.RadarSyncTheme
 import com.example.radarsync.utilities.PermissionHelper.Companion.checkPermissions
 import com.google.android.gms.common.GoogleApiAvailability
@@ -54,10 +52,10 @@ class MainActivity : AppCompatActivity() {
         checkGooglePlayServices()
         startLocationUpdates()
 
-        val startIntent = Intent(this, PollingService::class.java).apply {
-            action = PollingService.Actions.START.toString()
-        }
-        startService(startIntent)
+//        val startIntent = Intent(this, PollingService::class.java).apply {
+//            action = PollingService.Actions.START.toString()
+//        }
+//        startService(startIntent)
 
         // TODO: Uncomment when I have figured out how to use Compose
 //        setContent {
@@ -71,13 +69,6 @@ class MainActivity : AppCompatActivity() {
 //                }
 //            }
 //        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Intent(PollingService.Actions.STOP.toString()).also {
-            applicationContext.startForegroundService(it)
-        }
     }
 
     private fun isGooglePlayServicesAvailable(): Boolean {

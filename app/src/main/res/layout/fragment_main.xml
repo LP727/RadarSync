@@ -6,8 +6,9 @@
     android:layout_height="match_parent"
     tools:context=".MainFragment">
 
-    <include layout="@layout/user_pos"
-        android:id="@+id/userPos"/>
+    <include
+        android:id="@+id/userPos"
+        layout="@layout/user_pos" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -16,9 +17,34 @@
         android:clickable="true"
         android:focusable="true"
         android:focusableInTouchMode="true"
-        app:layout_constraintTop_toBottomOf="@id/userPos"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/userPos"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-         />
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/pollSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:checked="false"
+            android:showText="false"
+            android:text="@string/poll_switch"
+            android:textOff="@string/not_polling"
+            android:textOn="@string/polling"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -23,7 +23,7 @@ import com.google.android.gms.location.LocationServices
 
 class PollingService : Service() {
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private lateinit var userLocation: Location
+    private var userLocation = Location("")
     private lateinit var positionRepository: PositionRepository
     companion object {
         private const val NOTIFICATION_CHANNEL_ID = "polling_channel"

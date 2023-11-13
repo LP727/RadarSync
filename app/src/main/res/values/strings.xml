@@ -19,4 +19,7 @@
     <string name="alt">Alt:</string>
     <string name="acc">Acc:</string>
     <string name="user_position">You Are Here!</string>
+    <string name="poll_switch">Data Polling</string>
+    <string name="not_polling">Not polling</string>
+    <string name="polling">Polling</string>
 </resources>
